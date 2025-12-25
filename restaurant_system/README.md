@@ -337,3 +337,5 @@ This project was created as a take-home assignment for Django developer position
 **✨ Thank you for reviewing this submission!**
 
 All core requirements + bonus features are implemented and fully functional. The system is production-ready with proper architecture, security, and documentation.
+#   R e s t a u r a n t _ s y s t e m  
+ 
