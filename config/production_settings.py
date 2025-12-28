@@ -9,12 +9,17 @@ import dj_database_url
 DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
 ALLOWED_HOSTS = [
-    '.onrender.com',
+    'restaurant-system-jtqy.onrender.com',  # Specific Render domain
+    '*.onrender.com',  # Wildcard for all Render domains
+    '.onrender.com',   # Subdomain wildcard
     '.railway.app', 
     '.pythonanywhere.com',
     'localhost',
     '127.0.0.1'
 ]
+
+# Debug logging to verify settings are loaded
+print(f"🔧 PRODUCTION SETTINGS LOADED - DEBUG={DEBUG}")
 
 # Database - Use DATABASE_URL from environment
 DATABASES = {
