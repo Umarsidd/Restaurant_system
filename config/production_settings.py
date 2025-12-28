@@ -6,7 +6,8 @@ import os
 import dj_database_url
 
 # SECURITY
-DEBUG = False
+# Temporarily enable DEBUG to see errors (DISABLE after fixing)
+DEBUG = True  # TODO: Set to False after debugging
 SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
 ALLOWED_HOSTS = [
     'restaurant-system-jtqy.onrender.com',  # Specific Render domain
@@ -30,9 +31,16 @@ DATABASES = {
     )
 }
 
-# Static files
+# Static files (Django 5.0 format)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Security settings
 CSRF_COOKIE_SECURE = True
