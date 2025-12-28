@@ -1,112 +1,372 @@
-# Restaurant Live Table Order & Billing System
+# 🍽️ Restaurant Live Table Order & Billing System
 
-> **Full-Stack Django Developer Take-Home Assignment**  
-> A real-time restaurant management system for tracking table occupancy, order processing, and billing operations.
+> **A comprehensive real-time restaurant management system for table management, order processing, and billing operations.**
+
+![Django](https://img.shields.io/badge/Django-5.0.1-green) ![Python](https://img.shields.io/badge/Python-3.11+-blue) ![Status](https://img.shields.io/badge/Status-Production--Ready-success)
+
+**Live Demo:** [https://restaurant-system-jtqy.onrender.com](https://restaurant-system-jtqy.onrender.com)
 
 ---
 
-## 📋 Assignment Requirements Implemented
+## 🔑 Login Credentials
 
-### ✅ Core Features
+Access the system with these demo accounts:
 
-| Requirement | Status | Implementation |
-|------------|--------|----------------|
-| **Table Management** | ✅ Complete | 4 status types: Available, Occupied, Bill Requested, Closed |
-| **Menu & Orders** | ✅ Complete | Full order lifecycle with item management |
-| **Billing System** | ✅ Complete | Automated bill generation with tax calculation |
-| **Role-Based Access** | ✅ Complete | Waiter, Cashier, Manager with distinct permissions |
-| **Background Tasks** | ✅ Complete | Celery tasks for notifications & auto-operations |
+| Role | Email | Password | Access Level |
+|------|-------|----------|--------------|
+| **👨‍💼 Manager** | `manager@restaurant.com` | `manager123` | Complete system access + admin panel + analytics |
+| **👨‍🍳 Waiter** | `waiter1@restaurant.com` | `waiter123` | Create & manage orders, view table status |
+| **💰 Cashier** | `cashier@restaurant.com` | `cashier123` | Generate bills, process payments, export PDFs |
 
-### 🎯 Additional Features Delivered
+**Admin Panel Access:** `/admin/` (Manager only)  
+**Login Page:** `/login/`
 
-- ✅ **PDF Bill Export** - Professional invoice generation using ReportLab
-- ✅ **REST API Ready** - Django REST Framework configured
-- ✅ **Admin Interface** - Comprehensive Django admin panels for all models
-- ✅ **Price Snapshots** - Historical price accuracy for orders
-- ✅ **Auto-Status Updates** - Table status transitions automatically
+---
+
+## ✨ Key Features
+
+### 🪑 Table Management
+- **4 Status Types:** Available, Occupied, Bill Requested, Closed
+- **Real-time Status Dashboard** - Live updates showing all tables
+- **Auto-Status Transitions** - Status changes automatically based on orders/bills
+- **Capacity Tracking** - Seating capacity (2-10 seats) for each table
+- **Smart Filtering** - Filter tables by status for quick overview
+
+### 📋 Order Management
+- **Create Orders** - Select table, add multiple menu items with quantities
+- **Order Lifecycle:** Placed → In Kitchen → Served
+- **Real-time Updates** - Track order progress live
+- **Order History** - View all orders with timestamps and status
+- **Waiter Assignment** - Each order linked to specific waiter
+- **Price Snapshots** - Historical pricing preserved for accuracy
+
+### 💰 Billing System
+- **Auto-Calculate Bills** - Subtotal + 5% tax = Total
+- **PDF Export** - Professional invoice generation with restaurant branding
+- **Payment Tracking** - Mark bills as Paid/Pending
+- **Revenue Analytics** - Daily/monthly revenue reports
+- **Tax Reports** - Automated tax calculations
+
+### 🍕 Menu Management
+- **4 Categories:** Starters, Main Course, Drinks, Desserts
+- **21 Pre-loaded Items** - Sample menu with images
+- **Availability Toggle** - Mark items as available/unavailable
+- **Price Management** - Easy price updates (preserves order history)
+- **Image Support** - Menu item photos for better UX
+
+### 👥 Role-Based Access Control
+- **3 User Roles:** Manager, Waiter, Cashier
+- **Permission-Based UI** - Each role sees only relevant features
+- **Secure Authentication** - Django's built-in auth system
+- **Custom Dashboards** - Role-specific home pages
+
+### 📊 Analytics & Reports (Manager Only)
+- **Today's Statistics:**
+  - Total orders placed
+  - Active orders in kitchen
+  - Revenue generated
+  - Bills pending payment
+- **Table Utilization:** Available vs Occupied ratio
+- **Performance Metrics:** Orders per waiter, average bill amount
+- **Recent Activity Feed:** Latest orders and payments
+
+### 🔔 Background Tasks (Celery)
+- **Kitchen Notifications** - Auto-email when new order placed
+- **Auto-Close Tables** - Close abandoned tables after 3 hours
+- **Pending Bill Alerts** - Notify manager about unpaid bills >30 min
+
+---
+
+## 🎨 UI/UX Features
+
+### Design Philosophy
+- **Clean & Intuitive** - Minimal learning curve for restaurant staff
+- **Mobile-Responsive** - Works on tablets and phones
+- **Color-Coded Status** - Quick visual identification
+  - 🟢 Green - Available
+  - 🔵 Blue - Occupied
+  - 🟡 Yellow - Bill Requested
+  - ⚫ Gray - Closed
+- **Icon-Based Navigation** - Emoji icons for better visibility
+
+### Page-by-Page UI Overview
+
+#### 🏠 Login Page (`/login/`)
+- Simple email/password form
+- Remember me checkbox
+- Role-based redirect after login
+- Clean, professional design
+
+#### 👨‍🍳 Waiter Dashboard
+**Stats Cards:**
+- Active Orders count
+- Available Tables count
+- Today's Orders count
+
+**Quick Actions:**
+- ➕ Create New Order
+- 📋 View All Orders
+- 🪑 Table Status
+
+**Active Orders Table:**
+- Table number
+- Order status (color-coded)
+- Item count
+- Total amount
+- Creation time
+- Quick view button
+
+#### 💰 Cashier Dashboard
+**Stats Cards:**
+- Pending Bills count
+- Today's Bills generated
+- Today's Paid Bills
+- Today's Revenue (₹)
+
+**Quick Actions:**
+- 🧾 Generate Bill
+- 💵 View Pending Bills
+- 🪑 Table Status
+
+**Pending Bills Table:**
+- Table number
+- Order total
+- Generated time
+- Mark as Paid button
+- Export PDF option
+
+#### 👨‍💼 Manager Dashboard
+**Comprehensive Stats:**
+- Total Tables | Available | Occupied
+- Today's Orders | Active Orders
+- Today's Bills | Paid Bills
+- Today's Revenue
+
+**Quick Actions:**
+- ➕ Add Table
+- 🍕 Manage Menu
+- 👥 View Staff
+- 📊 Full Reports
+
+**Recent Activity:**
+- Latest 5 orders with details
+- Latest 5 bills with payment status
+
+#### 🪑 Table Status Dashboard (All Users)
+**Visual Grid Display:**
+- All tables shown in grid layout
+- Color-coded by status
+- Shows table number + capacity
+- Click to view details
+- Real-time status updates
+
+#### 📝 Create Order Page
+**Step-by-step Flow:**
+1. Select available table from dropdown
+2. Browse menu items by category
+3. Add items with quantity selector
+4. Review order summary
+5. Submit (table → Occupied)
+
+**Features:**
+- Live total calculation
+- Remove items option
+- Category filters for menu
+- Item availability check
+
+#### 🧾 Bill Generation Page
+**Smart Bill Creation:**
+- Auto-selects served orders
+- Shows order items breakdown
+- Calculates subtotal
+- Adds 5% tax automatically
+- Displays final total
+- Generate button → Creates bill
+
+#### 📄 Bill Detail Page
+**Professional Invoice View:**
+- Restaurant header
+- Bill number & timestamp
+- Table information
+- Complete order breakdown
+- Tax calculation details
+- Payment status
+- Export PDF button
+- Mark as Paid button (if pending)
 
 ---
 
 ## 🏗️ System Architecture
 
-### Database Models
+### Technology Stack
 
 ```
-User (Custom Auth)
-├── role: WAITER | CASHIER | MANAGER
-├── employee_id, phone_number
-└── Django permissions
+Frontend:
+├── HTML5 + CSS3 (Custom styling)
+├── Bootstrap 5 (Responsive grid)
+├── JavaScript (Dynamic interactions)
+└── Django Templates (Server-side rendering)
 
-Table
-├── table_number (unique)
-├── seating_capacity
-├── status: AVAILABLE | OCCUPIED | BILL_REQUESTED | CLOSED
-└── last_activity (timestamp)
+Backend:
+├── Django 5.0.1 (Web framework)
+├── Django REST Framework 3.15.2 (API endpoints)
+├── SQLite / PostgreSQL (Database)
+├── Celery 5.3.4 (Background tasks)
+├── Redis 5.0.1 (Task broker)
+└── ReportLab 4.0.9 (PDF generation)
 
-MenuItem
-├── name, category: STARTER | MAIN | DRINKS | DESSERT
-├── price, description, image
-└── is_available (boolean)
-
-Order
-├── table → Table (FK)
-├── waiter → User (FK)
-├── status: PLACED | IN_KITCHEN | SERVED
-└── OrderItems (M2M through OrderItem)
-
-OrderItem
-├── order → Order (FK)
-├── menu_item → MenuItem (FK)
-├── quantity
-└── price_at_order (snapshot)
-
-Bill
-├── table → Table (FK)
-├── order → Order (O2O)
-├── cashier → User (FK)
-├── subtotal, tax_amount, total_amount
-└── status: NOT_GENERATED | PENDING_PAYMENT | PAID
+Deployment:
+├── Gunicorn (WSGI server)
+├── WhiteNoise (Static files)
+├── Render.com (Cloud hosting)
+└── PostgreSQL (Production DB)
 ```
 
-### Role-Based Permissions
+### Database Schema
 
-| Role | Capabilities |
-|------|-------------|
-| **WAITER** | Create orders, Add menu items to orders, Update order status (Placed → In Kitchen → Served) |
-| **CASHIER** | Generate bills, View bill details, Mark bills as paid, Export PDF bills |
-| **MANAGER** | All waiter + cashier permissions, CRUD tables, CRUD menu items, View reports, Access admin panel |
-
-### Background Tasks (Celery)
-
-1. **Kitchen Notification** - Email sent when new order is placed
-2. **Auto-Close Abandoned Tables** - Periodic task (hourly) to close inactive tables (>3 hours)
-3. **Pending Bill Alerts** - Periodic task (15 min) to alert manager about unpaid bills (>30 min)
+```
+┌─────────────┐
+│    User     │ (Custom Auth Model)
+├─────────────┤
+│ id          │
+│ email       │ (unique, used for login)
+│ role        │ (WAITER/CASHIER/MANAGER)
+│ employee_id │
+│ phone       │
+└─────────────┘
+       │
+       │ waiter_id (FK)
+       ▼
+┌─────────────┐      ┌──────────────┐
+│   Order     │      │  OrderItem   │
+├─────────────┤      ├──────────────┤
+│ id          │◄─────┤ order_id     │
+│ table_id    │      │ menu_item_id │
+│ waiter_id   │      │ quantity     │
+│ status      │      │ price_at_order│ (snapshot)
+│ created_at  │      └──────────────┘
+└─────────────┘
+       │
+       │ table_id (FK)
+       ▼
+┌─────────────┐      ┌─────────────┐
+│    Table    │      │  MenuItem   │
+├─────────────┤      ├─────────────┤
+│ id          │      │ id          │
+│ table_number│      │ name        │
+│ capacity    │      │ category    │
+│ status      │      │ price       │
+│ last_activity│     │ image       │
+└─────────────┘      │ is_available│
+       │             └─────────────┘
+       │
+       │ table_id (FK)
+       ▼
+┌─────────────┐
+│    Bill     │
+├─────────────┤
+│ id          │
+│ order_id    │ (OneToOne)
+│ table_id    │
+│ cashier_id  │
+│ subtotal    │
+│ tax_amount  │
+│ total_amount│
+│ status      │
+│ generated_at│
+└─────────────┘
+```
 
 ---
 
-## 🚀 Setup Instructions
+## 🚀 Complete Functionality Guide
 
-### Prerequisites
+### For Waiters 👨‍🍳
 
-- Python 3.11+
-- Git
-- Redis (optional, for Celery tasks)
+**Workflow:**
+1. **Login** → Auto-redirect to Waiter Dashboard
+2. **View Available Tables** → Check table status dashboard
+3. **Create Order:**
+   - Click "Create New Order"
+   - Select available table
+   - Add menu items (category-wise)
+   - Set quantities
+   - Submit → Table status changes to "Occupied"
+4. **Update Order Status:**
+   - View order details
+   - Mark as "In Kitchen" when sent
+   - Mark as "Served" when delivered
+5. **Track Performance:** View today's order count in dashboard
 
-### Installation
+### For Cashiers 💰
+
+**Workflow:**
+1. **Login** → Auto-redirect to Cashier Dashboard
+2. **Identify Tables Needing Bills:**
+   - Check "Tables Requesting Bills" section
+   - Filter served orders without bills
+3. **Generate Bill:**
+   - Click "Generate Bill"
+   - Select table with served order
+   - Review auto-calculated total
+   - Confirm → Bill created, table status → "Bill Requested"
+4. **Process Payment:**
+   - View bill details
+   - Verify amount with customer
+   - Mark as "Paid" → Table status → "Available"
+5. **Export PDF:**
+   - Open bill detail page
+   - Click "Export PDF"
+   - Professional invoice downloads
+6. **Track Revenue:** View today's revenue in dashboard
+
+### For Managers 👨‍💼
+
+**Complete System Access:**
+1. **Dashboard Analytics:**
+   - Monitor real-time stats
+   - Track today's performance
+   - View revenue trends
+2. **Table Management:**
+   - Add new tables (number + capacity)
+   - Edit table details
+   - Delete inactive tables
+3. **Menu Management:**
+   - Add new menu items with images
+   - Update prices
+   - Toggle availability
+   - Organize by categories
+4. **Staff Management:**
+   - View all staff members
+   - Assign roles
+   - Generate performance reports
+5. **Order Oversight:**
+   - View all orders (any waiter)
+   - Track order status
+   - Intervene if needed
+6. **Financial Reports:**
+   - Daily revenue summaries
+   - Bill payment tracking
+   - Tax calculations
+7. **Admin Panel Access:**
+   - Full Django admin
+   - Database management
+   - Advanced configurations
+
+---
+
+## 📦 Installation & Setup
+
+### Quick Start (Development)
 
 ```bash
-# 1. Clone the repository
-git clone <your-repo-url>
-cd restaurant_system
+# 1. Clone repository
+git clone https://github.com/Umarsidd/Restaurant_system.git
+cd Restaurant_system
 
 # 2. Create virtual environment
 python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# Linux/Mac
-source venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # 3. Install dependencies
 pip install -r requirements.txt
@@ -114,226 +374,159 @@ pip install -r requirements.txt
 # 4. Run migrations
 python manage.py migrate
 
-# 5. Seed demo data
+# 5. Load demo data (users, tables, menu)
 python manage.py seed_data
 
 # 6. Run development server
 python manage.py runserver
+
+# 7. Access system
+# http://localhost:8000/login/
 ```
 
-### Optional: Background Tasks
+### Production Deployment (Render.com)
+
+**Environment Variables Required:**
+```bash
+DJANGO_SETTINGS_MODULE=config.production_settings
+DATABASE_URL=<PostgreSQL connection string>
+SECRET_KEY=<random secret key>
+```
+
+**Deployment Steps:**
+1. Push code to GitHub
+2. Connect repository to Render
+3. Set environment variables
+4. Deploy automatically
+5. Run migrations: `python manage.py migrate`
+6. Load data: `python manage.py seed_data`
+
+**Current Deployment:** https://restaurant-system-jtqy.onrender.com
+
+---
+
+## 🎯 Sample Workflows
+
+### Complete Order-to-Payment Flow
+
+```
+1. WAITER logs in
+   ↓
+2. Creates order for Table T3
+   - 2x Margherita Pizza (₹600)
+   - 1x Caesar Salad (₹200)
+   - 2x Coca Cola (₹100)
+   ↓
+3. Table T3 status → OCCUPIED
+   ↓
+4. Marks order → IN_KITCHEN
+   ↓
+5. Food prepared, marks → SERVED
+   ↓
+6. CASHIER logs in
+   ↓
+7. Generates bill for Table T3
+   - Subtotal: ₹900
+   - Tax (5%): ₹45
+   - Total: ₹945
+   ↓
+8. Table T3 status → BILL_REQUESTED
+   ↓
+9. Customer pays, marks bill → PAID
+   ↓
+10. Table T3 status → AVAILABLE
+    ✅ Complete!
+```
+
+---
+
+## 📸 Screenshots
+
+*(Add screenshots of your deployed application here)*
+
+- Login Page
+- Waiter Dashboard
+- Cashier Dashboard
+- Manager Dashboard
+- Table Status Grid
+- Create Order Form
+- Bill Generation
+- PDF Invoice
+
+---
+
+## 🛠️ Development
+
+### Project Structure
+
+```
+Restaurant_system/
+├── accounts/           # User authentication & roles
+├── tables/             # Table management
+├── menu/               # Menu items & categories
+├── orders/             # Order processing
+├── billing/            # Bill generation & payments
+├── notifications/      # Celery background tasks
+├── dashboard/          # Role-based dashboards
+├── config/             # Django settings & URLs
+├── templates/          # HTML templates
+├── static/             # CSS, JS, images
+├── media/              # User uploads (menu images)
+├── requirements.txt    # Python dependencies
+├── manage.py           # Django CLI
+├── build.sh            # Render build script
+├── Procfile            # Gunicorn config
+└── README.md           # This file
+```
+
+### Running Tests
 
 ```bash
-# Terminal 2 - Celery Worker (requires Redis)
+python manage.py test
+```
+
+### Running Background Tasks (Optional)
+
+```bash
+# Terminal 1: Redis server
+redis-server
+
+# Terminal 2: Celery worker
 celery -A config worker -l info
 
-# Terminal 3 - Celery Beat Scheduler
+# Terminal 3: Celery beat (scheduled tasks)
 celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 ```
 
 ---
 
-## 🔑 Demo Credentials
+## 🔐 Security Features
 
-| Role | Username | Password | Access Level |
-|------|----------|----------|--------------|
-| **Manager** | `manager` | `manager123` | Full system access + admin panel |
-| **Waiter 1** | `waiter1` | `waiter123` | Order creation & management |
-| **Waiter 2** | `waiter2` | `waiter123` | Order creation & management |
-| **Cashier** | `cashier` | `cashier123` | Bill generation & payments |
-
-**Admin Panel:** http://localhost:8000/admin
-
----
-
-## 📊 Sample Data Included
-
-The `seed_data` command populates:
-
-- **4 Users** (1 Manager, 2 Waiters, 1 Cashier)
-- **10 Tables** (T1-T10, capacities 2-10 seats)
-- **21 Menu Items**
-  - 4 Starters (Garlic Bread, Spring Rolls, Caesar Salad, Soup)
-  - 8 Main Courses (Pizzas, Pasta, Steak, Burgers, Fish & Chips, Stir Fry)
-  - 5 Drinks (Coke, Juice, Tea, Coffee, Water)
-  - 4 Desserts (Chocolate Cake, Ice Cream, Tiramisu, Apple Pie)
-- **2 Active Sample Orders** (Table T3 "In Kitchen", Table T6 "Placed")
-
----
-
-## 💼 Usage Guide
-
-### For Waiters
-
-1. Log into admin panel with waiter credentials
-2. Navigate to **Orders** → **Add Order**
-3. Select available table, add menu items with quantities
-4. Submit order (table automatically becomes "Occupied")
-5. Update order status: Placed → In Kitchen → Served
-
-### For Cashiers
-
-1. Log into admin panel with cashier credentials
-2. Navigate to **Bills** → **Add Bill**
-3. Select table with served order
-4. Bill auto-calculates: subtotal + 5% tax = total
-5. Mark bill as "Paid" (table automatically becomes "Available")
-6. Export PDF if needed
-
-### For Managers
-
-1. Full access to all modules
-2. **Tables**: Add/edit tables, monitor status
-3. **Menu**: Add/edit items, toggle availability
-4. **Orders**: View all orders, track workflow
-5. **Bills**: Oversee payments, financial reports
-6. **Users**: Manage staff members
-
----
-
-## 🛠️ Technology Stack
-
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| Backend | Django 5.2.9 | Web framework & ORM |
-| Database | SQLite | Development (PostgreSQL ready) |
-| API | Django REST Framework 3.16 | RESTful endpoints |
-| Tasks | Celery 5.6 + Redis | Background processing |
-| PDF | ReportLab 4.4 | Bill export |
-| Auth | Django Built-in | User management & RBAC |
-
----
-
-## 📁 Project Structure
-
-```
-restaurant_system/
-├── accounts/          # Custom User model + RBAC decorators
-├── tables/            # Table management
-├── menu/              # Menu items
-├── orders/            # Order processing
-├── billing/           # Bill generation & payment
-├── notifications/     # Celery background tasks
-├── dashboard/         # Reports & seed data command
-├── config/            # Django settings & Celery config
-├── templates/         # HTML templates
-├── static/            # CSS, JS, images
-├── media/             # User uploads
-├── requirements.txt   # Python dependencies
-└── README.md          # This file
-```
-
----
-
-## 🔍 Testing & Validation
-
-### System Check
-```bash
-python manage.py check  # Verify Django configuration
-```
-
-### Manual Testing Workflow
-
-**Complete Order-to-Payment Flow:**
-
-1. ✅ Login as `waiter1`
-2. ✅ Create order for Table T5 (status → Occupied)
-3. ✅ Add items: 2x Pizza, 1x Salad, 2x Coke
-4. ✅ Update order status to "In Kitchen"
-5. ✅ Mark order as "Served"
-6. ✅ Logout, login as `cashier`
-7. ✅ Generate bill for Table T5 (status → Bill Requested)
-8. ✅ Verify calculations: subtotal + 5% tax
-9. ✅ Mark bill as "Paid" (status → Available)
-10. ✅ Verify table is available for new customers
-
-**All workflows tested and verified ✅**
-
----
-
-## 📝 Assumptions & Design Decisions
-
-### Business Logic
-
-1. **One Order Per Table** - A table can have only one active order at a time
-2. **Flat Tax Rate** - 5% tax applied uniformly (configurable per bill if needed)
-3. **Table Status Automation** - Status changes happen automatically:
-   - Order created → Table becomes "Occupied"
-   - Bill generated → Table becomes "Bill Requested"
-   - Bill paid → Table becomes "Available"
-4. **Price Integrity** - OrderItem stores `price_at_order` to preserve historical pricing
-5. **Sequential Order Flow** - Order status follows: Placed → In Kitchen → Served
-
-### Technical Decisions
-
-1. **SQLite for Demo** - Easy setup, zero configuration. Production should use PostgreSQL
-2. **Console Email Backend** - Emails print to console during development. Configure SMTP for production
-3. **Session Authentication** - Django built-in sessions for web interface
-4. **Admin-First Approach** - Leveraging Django admin for rapid development
-5. **South Indian Restaurant Theme** - Generic menu items (easily customizable)
-
-### Security
-
-- ✅ CSRF protection enabled
-- ✅ Password hashing (PBKDF2)
-- ✅ Role-based permissions at view level
-- ✅ No hardcoded secrets (production should use environment variables)
-
----
-
-## 🚀 Production Deployment Notes
-
-### Database Migration
-```python
-# settings.py
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'restaurant_db',
-        'USER': 'db_user',
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-```
-
-### Email Configuration
-```python
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
-```
-
-### Security Settings
-```python
-DEBUG = False
-ALLOWED_HOSTS = ['yourdomain.com']
-SECRET_KEY = os.environ.get('SECRET_KEY')
-```
+- ✅ CSRF Protection enabled
+- ✅ Password hashing (PBKDF2_SHA256)
+- ✅ Role-based access control
+- ✅ SQL injection prevention (Django ORM)
+- ✅ XSS protection
+- ✅ Secure session management
+- ✅ HTTPS in production
+- ✅ Environment variable secrets
 
 ---
 
 ## 📞 Support & Contact
 
-For questions or issues regarding this assignment submission:
-
-- **Developer**: [Your Name]
-- **Email**: [Your Email]
-- **GitHub**: [Your GitHub Profile]
-- **Submission Date**: December 2024
+**Developer:** Umar Siddiqui  
+**GitHub:** [@Umarsidd](https://github.com/Umarsidd)  
+**Repository:** [Restaurant_system](https://github.com/Umarsidd/Restaurant_system)
 
 ---
 
 ## 📄 License
 
-This project was created as a take-home assignment for Django developer position evaluation.
+This project is open-source for educational and evaluation purposes.
 
 ---
 
-**✨ Thank you for reviewing this submission!**
+**⭐ If you found this helpful, please star the repository!**
 
-All core requirements + bonus features are implemented and fully functional. The system is production-ready with proper architecture, security, and documentation.
+Built with ❤️ using Django | Designed for efficiency in restaurant operations
