@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Order #{{ order.pk }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header flex justify-between items-center">
+            <h2>Order #{{ order.pk }} - {{ order.table.table_number }}</h2>
+            <span class="table-status-badge badge-{{ order.status|lower }}">
+                {{ order.get_status_display }}
+            </span>
+        </div>
+
+        <div style="padding: 1rem;">
+            <p><strong>Table:</strong> {{ order.table.table_number }} ({{ order.table.seating_capacity }} seats)</p>
+            <p><strong>Waiter:</strong> {{ order.waiter.username }}</p>
+            <p><strong>Created:</strong> {{ order.created_at|date:"F d, Y h:i A" }}</p>
+            {% if order.notes %}
+            <p><strong>Notes:</strong> {{ order.notes }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Order Items</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>{{ item.menu_item.name }}</td>
+                    <td>₹{{ item.price_at_order }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+                <tr style="font-weight: bold; border-top: 2px solid #333;">
+                    <td colspan="3" class="text-right">Total:</td>
+                    <td>₹{{ order.calculate_total }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    {% if user.is_waiter or user.is_manager %}
+    <div class="card">
+        <div class="card-header">Update Status</div>
+        <form method="post" action="{% url 'orders:update_status' order.pk %}">
+            {% csrf_token %}
+            <div style="padding: 1rem;">
+                <div class="flex gap-2">
+                    <button type="submit" name="status" value="PLACED" class="btn btn-secondary">Placed</button>
+                    <button type="submit" name="status" value="IN_KITCHEN" class="btn btn-warning">In Kitchen</button>
+                    <button type="submit" name="status" value="SERVED" class="btn btn-success">Served</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'orders:list' %}" class="btn btn-secondary">← Back to Orders</a>
+</div>
+{% endblock %}

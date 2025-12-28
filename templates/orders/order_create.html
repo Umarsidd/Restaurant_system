@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Order{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Create New Order</h2>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Select Table *</label>
+                <select name="table" class="form-control" required>
+                    <option value="">-- Select Table --</option>
+                    {% for table in available_tables %}
+                    <option value="{{ table.id }}">{{ table.table_number }} ({{ table.seating_capacity }} seats)
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Order Notes (Optional)</label>
+                <textarea name="notes" class="form-control" rows="2"
+                    placeholder="Any special instructions..."></textarea>
+            </div>
+
+            <h3 class="mt-3 mb-2">Select Menu Items</h3>
+
+            {% regroup menu_items by get_category_display as category_list %}
+            {% for category in category_list %}
+            <div class="card mb-3">
+                <div class="card-header"><strong>{{ category.grouper }}</strong></div>
+                <div style="padding: 1rem;">
+                    {% for item in category.list %}
+                    <div class="flex justify-between items-center mb-2"
+                        style="padding: 0.5rem; border-bottom: 1px solid #eee;">
+                        <div>
+                            <strong>{{ item.name }}</strong>
+                            <div style="color: #666; font-size: 0.9rem;">₹{{ item.price }}</div>
+                        </div>
+                        <div>
+                            <input type="number" name="item_{{ item.id }}" min="0" value="0" class="form-control"
+                                style="width: 80px;" placeholder="Qty">
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="flex gap-2">
+                <button type="submit" class="btn btn-success">Create Order</button>
+                <a href="{% url 'dashboard:waiter' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

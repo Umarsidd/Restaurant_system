@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}{% if object %}Edit{% else %}Create{% endif %} Table{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>{% if object %}Edit{% else %}Create{% endif %} Table</h2>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Table Number *</label>
+                <input type="text" name="table_number" class="form-control"
+                    value="{{ form.table_number.value|default:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Seating Capacity *</label>
+                <input type="number" name="seating_capacity" class="form-control"
+                    value="{{ form.seating_capacity.value|default:'' }}" required min="1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Status *</label>
+                <select name="status" class="form-control" required>
+                    <option value="AVAILABLE">Available</option>
+                    <option value="OCCUPIED">Occupied</option>
+                    <option value="BILL_REQUESTED">Bill Requested</option>
+                    <option value="CLOSED">Closed</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Save</button>
+            <a href="{% url 'tables:list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Tables{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header flex justify-between items-center">
+            <h2>Table Management</h2>
+            {% if user.is_manager %}
+            <a href="{% url 'tables:create' %}" class="btn btn-primary">Add Table</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Capacity</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for table in tables %}
+                <tr>
+                    <td><strong>{{ table.table_number }}</strong></td>
+                    <td>{{ table.seating_capacity }} seats</td>
+                    <td><span class="table-status-badge badge-{{ table.status|lower }}">{{ table.get_status_display
+                            }}</span></td>
+                    <td>
+                        {% if user.is_manager %}
+                        <a href="{% url 'tables:edit' table.pk %}" class="btn btn-sm btn-secondary">Edit</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

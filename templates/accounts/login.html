@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Restaurant Management System</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🍽️ Restaurant System</h1>
+                <p>Please login to continue</p>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="form-label" for="id_username">Username</label>
+                    <input type="text" name="username" id="id_username" class="form-control" required autofocus
+                        placeholder="Enter your username">
+                    {% if form.username.errors %}
+                    <small style="color: var(--danger-color);">{{ form.username.errors }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="id_password">Password</label>
+                    <input type="password" name="password" id="id_password" class="form-control" required
+                        placeholder="Enter your password">
+                    {% if form.password.errors %}
+                    <small style="color: var(--danger-color);">{{ form.password.errors }}</small>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Login
+                </button>
+            </form>
+
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--light-bg);">
+                <p style="font-size: 0.85rem; color: #7f8c8d; text-align: center;">
+                    <strong>Demo Credentials:</strong><br>
+                    Manager: manager / manager123<br>
+                    Waiter: waiter1 / waiter123<br>
+                    Cashier: cashier / cashier123
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Generate Bill{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Generate Bill</h2>
+        </div>
+
+        {% if orders_needing_bills %}
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Select Order to Bill *</label>
+                <select name="order_id" class="form-control" required>
+                    <option value="">-- Select Order --</option>
+                    {% for order in orders_needing_bills %}
+                    <option value="{{ order.id }}">
+                        {{ order.table.table_number }} - Waiter: {{ order.waiter.username }} - ₹{{ order.calculate_total
+                        }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Generate Bill</button>
+        </form>
+        {% else %}
+        <p style="padding: 1rem;">No served orders waiting for bills.</p>
+        <a href="{% url 'dashboard:cashier' %}" class="btn btn-secondary">← Back to Dashboard</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

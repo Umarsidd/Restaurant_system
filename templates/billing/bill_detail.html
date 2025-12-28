@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Bill #{{ bill.pk }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header flex justify-between items-center">
+            <h2>Bill #{{ bill.pk }} - {{ bill.table.table_number }}</h2>
+            <span class="table-status-badge badge-{{ bill.status|lower }}">
+                {{ bill.get_status_display }}
+            </span>
+        </div>
+
+        <div style="padding: 1rem;">
+            <p><strong>Table:</strong> {{ bill.table.table_number }}</p>
+            <p><strong>Waiter:</strong> {{ bill.order.waiter.username }}</p>
+            <p><strong>Cashier:</strong> {{ bill.cashier.username|default:"N/A" }}</p>
+            <p><strong>Generated:</strong> {{ bill.generated_at|date:"F d, Y h:i A" }}</p>
+            {% if bill.paid_at %}
+            <p><strong>Paid:</strong> {{ bill.paid_at|date:"F d, Y h:i A" }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Bill Items</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in bill.order.items.all %}
+                <tr>
+                    <td>{{ item.menu_item.name }}</td>
+                    <td>₹{{ item.price_at_order }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+                <tr style="border-top: 1px solid #ddd;">
+                    <td colspan="3" class="text-right"><strong>Subtotal:</strong></td>
+                    <td><strong>₹{{ bill.subtotal }}</strong></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-right">Tax ({{ bill.tax_percentage }}%):</td>
+                    <td>₹{{ bill.tax_amount }}</td>
+                </tr>
+                <tr style="font-size: 1.2rem; font-weight: bold; border-top: 2px solid #333;">
+                    <td colspan="3" class="text-right">Total:</td>
+                    <td>₹{{ bill.total_amount }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="flex gap-2">
+        {% if bill.status != 'PAID' %}
+        <form method="post" action="{% url 'billing:pay' bill.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">✓ Mark as Paid</button>
+        </form>
+        {% endif %}
+        <a href="{% url 'billing:pdf' bill.pk %}" class="btn btn-primary">📄 Download PDF</a>
+        <a href="{% url 'billing:list' %}" class="btn btn-secondary">← Back to Bills</a>
+    </div>
+</div>
+{% endblock %}

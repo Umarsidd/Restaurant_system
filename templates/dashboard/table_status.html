@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Table Status - Restaurant System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header flex justify-between items-center">
+            <h2>Live Table Status</h2>
+            <button onclick="location.reload()" class="btn btn-secondary">🔄 Refresh</button>
+        </div>
+    </div>
+
+    <!-- Status Summary -->
+    <div class="stats-grid">
+        <div class="stat-card success">
+            <div class="stat-value">{{ status_counts.available }}</div>
+            <div class="stat-label">Available</div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-value">{{ status_counts.occupied }}</div>
+            <div class="stat-label">Occupied</div>
+        </div>
+        <div class="stat-card primary">
+            <div class="stat-value">{{ status_counts.bill_requested }}</div>
+            <div class="stat-label">Bill Requested</div>
+        </div>
+        <div class="stat-card danger">
+            <div class="stat-value">{{ status_counts.closed }}</div>
+            <div class="stat-label">Closed</div>
+        </div>
+    </div>
+
+    <!-- Table Grid -->
+    <div class="table-grid">
+        {% for table in tables %}
+        <div class="table-status-card {{ table.status|lower }}">
+            <div class="table-number">{{ table.table_number }}</div>
+            <div class="table-capacity">Seats: {{ table.seating_capacity }}</div>
+            <div class="table-status-badge badge-{{ table.status|lower }}">
+                {{ table.get_status_display }}
+            </div>
+            {% if table.current_order %}
+            <div style="margin-top: 0.5rem; font-size: 0.8rem; color: #666;">
+                Waiter: {{ table.current_order.waiter.username }}
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>No tables available</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

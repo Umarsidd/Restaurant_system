@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}{% if object %}Edit{% else %}Create{% endif %} Menu Item{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header"><h2>{% if object %}Edit{% else %}Create{% endif %} Menu Item</h2></div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Name *</label>
+                <input type="text" name="name" class="form-control" value="{{ form.name.value|default:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category *</label>
+                <select name="category" class="form-control" required>
+                    <option value="STARTER">Starter</option>
+                    <option value="MAIN">Main Course</option>
+                    <option value="DRINKS">Drinks</option>
+                    <option value="DESSERT">Dessert</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Price *</label>
+                <input type="number" step="0.01" name="price" class="form-control" value="{{ form.price.value|default:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3">{{ form.description.value|default:'' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="is_available"{% if not object or form.is_available.value %} checked{% endif %}> Available</label>
+            </div>
+            <button type="submit" class="btn btn-success">Save</button>
+            <a href="{% url 'menu:list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

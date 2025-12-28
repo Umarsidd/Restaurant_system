@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Manager Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>👔 Manager Dashboard</h2>
+            <p>Welcome, {{ user.get_full_name|default:user.username }}!</p>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card success">
+            <div class="stat-value">{{ available_tables }}</div>
+            <div class="stat-label">Available Tables</div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-value">{{ occupied_tables }}</div>
+            <div class="stat-label">Occupied Tables</div>
+        </div>
+        <div class="stat-card primary">
+            <div class="stat-value">{{ today_orders_count }}</div>
+            <div class="stat-label">Today's Orders</div>
+        </div>
+        <div class="stat-card success">
+            <div class="stat-value">₹{{ today_revenue|floatformat:2 }}</div>
+            <div class="stat-label">Today's Revenue</div>
+        </div>
+    </div>
+
+    <div class="flex gap-2 mb-4 flex-wrap">
+        <a href="{% url 'tables:list' %}" class="btn btn-primary">🪑 Manage Tables</a>
+        <a href="{% url 'menu:list' %}" class="btn btn-primary">🍽️ Manage Menu</a>
+        <a href="{% url 'orders:list' %}" class="btn btn-secondary">📋 All Orders</a>
+        <a href="{% url 'billing:list' %}" class="btn btn-secondary">💰 All Bills</a>
+        <a href="/admin/" class="btn btn-secondary">⚙️ Admin Panel</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 1.5rem;">
+        <div class="card">
+            <div class="card-header">Recent Orders</div>
+            {% if recent_orders %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Table</th>
+                        <th>Waiter</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td>{{ order.table.table_number }}</td>
+                        <td>{{ order.waiter.username }}</td>
+                        <td>
+                            <span class="table-status-badge badge-{{ order.status|lower }}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </td>
+                        <td>₹{{ order.calculate_total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p style="padding: 1rem;">No recent orders</p>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="card-header">Recent Bills</div>
+            {% if recent_bills %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Table</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in recent_bills %}
+                    <tr>
+                        <td>{{ bill.table.table_number }}</td>
+                        <td>₹{{ bill.total_amount }}</td>
+                        <td>
+                            <span class="table-status-badge badge-{{ bill.status|lower }}">
+                                {{ bill.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p style="padding: 1rem;">No recent bills</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Bills{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header flex justify-between items-center">
+            <h2>Bills</h2>
+            <a href="{% url 'billing:generate' %}" class="btn btn-primary">Generate Bill</a>
+        </div>
+    </div>
+
+    {% if bills %}
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Bill #</th>
+                    <th>Table</th>
+                    <th>Cashier</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Generated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bill in bills %}
+                <tr>
+                    <td><strong>#{{ bill.pk }}</strong></td>
+                    <td>{{ bill.table.table_number }}</td>
+                    <td>{{ bill.cashier.username|default:"N/A" }}</td>
+                    <td>
+                        <span class="table-status-badge badge-{{ bill.status|lower }}">
+                            {{ bill.get_status_display }}
+                        </span>
+                    </td>
+                    <td>₹{{ bill.total_amount }}</td>
+                    <td>{{ bill.generated_at|date:"M d, h:i A" }}</td>
+                    <td>
+                        <a href="{% url 'billing:detail' bill.pk %}" class="btn btn-sm btn-primary">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card">
+        <p style="padding: 1rem;">No bills found.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

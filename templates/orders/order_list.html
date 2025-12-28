@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header flex justify-between items-center">
+            <h2>Orders</h2>
+            {% if user.is_waiter or user.is_manager %}
+            <a href="{% url 'orders:create' %}" class="btn btn-primary">Create Order</a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if orders %}
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Table</th>
+                    <th>Waiter</th>
+                    <th>Status</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><strong>#{{ order.pk }}</strong></td>
+                    <td>{{ order.table.table_number }}</td>
+                    <td>{{ order.waiter.username }}</td>
+                    <td>
+                        <span class="table-status-badge badge-{{ order.status|lower }}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ order.items.count }}</td>
+                    <td>₹{{ order.calculate_total }}</td>
+                    <td>{{ order.created_at|date:"M d, h:i A" }}</td>
+                    <td>
+                        <a href="{% url 'orders:detail' order.pk %}" class="btn btn-sm btn-primary">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card">
+        <p style="padding: 1rem;">No orders found.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Cashier Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>💰 Cashier Dashboard</h2>
+            <p>Welcome, {{ user.get_full_name|default:user.username }}!</p>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card danger">
+            <div class="stat-value">{{ pending_bills_count }}</div>
+            <div class="stat-label">Pending Bills</div>
+        </div>
+        <div class="stat-card success">
+            <div class="stat-value">{{ today_paid_count }}</div>
+            <div class="stat-label">Paid Today</div>
+        </div>
+        <div class="stat-card primary">
+            <div class="stat-value">₹{{ today_revenue|floatformat:2 }}</div>
+            <div class="stat-label">Today's Revenue</div>
+        </div>
+    </div>
+
+    <div class="flex gap-2 mb-4">
+        <a href="{% url 'billing:generate' %}" class="btn btn-primary">➕ Generate Bill</a>
+        <a href="{% url 'billing:list' %}" class="btn btn-secondary">📋 View All Bills</a>
+        <a href="{% url 'dashboard:table_status' %}" class="btn btn-secondary">🪑 Table Status</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Pending Bills</div>
+        {% if pending_bills %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Bill #</th>
+                    <th>Table</th>
+                    <th>Total</th>
+                    <th>Generated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bill in pending_bills %}
+                <tr>
+                    <td><strong>#{{ bill.pk }}</strong></td>
+                    <td>{{ bill.table.table_number }}</td>
+                    <td>₹{{ bill.total_amount }}</td>
+                    <td>{{ bill.generated_at|date:"h:i A" }}</td>
+                    <td>
+                        <a href="{% url 'billing:detail' bill.pk %}" class="btn btn-sm btn-primary">View & Pay</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="padding: 1rem;">No pending bills. All caught up! 🎉</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="card-header">Tables Needing Bills</div>
+        {% if tables_needing_bills %}
+        <div class="table-grid">
+            {% for table in tables_needing_bills %}
+            <div class="table-status-card occupied">
+                <div class="table-number">{{ table.table_number }}</div>
+                <div class="table-capacity">Ready for billing</div>
+                <a href="{% url 'billing:generate' %}" class="btn btn-sm btn-primary mt-2">Generate Bill</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="padding: 1rem;">No tables waiting for bills.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Restaurant Management System{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <nav class="navbar">
+        <a href="{% url 'dashboard:home' %}" class="navbar-brand">🍽️ Restaurant System</a>
+        <ul class="navbar-nav">
+            <li><a href="{% url 'dashboard:home' %}" class="nav-link">Dashboard</a></li>
+            <li><a href="{% url 'dashboard:table_status' %}" class="nav-link">Tables</a></li>
+            
+            {% if user.is_waiter or user.is_manager %}
+            <li><a href="{% url 'orders:list' %}" class="nav-link">Orders</a></li>
+            <li><a href="{% url 'orders:create' %}" class="nav-link">Create Order</a></li>
+            {% endif %}
+            
+            {% if user.is_cashier or user.is_manager %}
+            <li><a href="{% url 'billing:list' %}" class="nav-link">Bills</a></li>
+            <li><a href="{% url 'billing:generate' %}" class="nav-link">Generate Bill</a></li>
+            {% endif %}
+            
+            {% if user.is_manager %}
+            <li><a href="{% url 'menu:list' %}" class="nav-link">Menu</a></li>
+            <li><a href="{% url 'tables:list' %}" class="nav-link">Manage Tables</a></li>
+            <li><a href="/admin/" class="nav-link">Admin</a></li>
+            {% endif %}
+            
+            <li>
+                <span class="nav-link" style="cursor: default;">
+                    👤 {{ user.username }} ({{ user.get_role_display }})
+                </span>
+            </li>
+            <li>
+                <form method="post" action="{% url 'accounts:logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link" style="background: none; border: none; cursor: pointer; color: white;">
+                        Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% if messages %}
+    <div class="container" style="margin-top: 1rem;">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
